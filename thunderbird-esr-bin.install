@@ -1,0 +1,34 @@
+# Colored makepkg-like functions
+msg_blue() {
+    printf "${BLUE}==>${ALL_OFF}${BOLD} $1${ALL_OFF}\n"
+}
+
+note() {
+    printf "${BLUE}==>${ALL_OFF}${YELLOW} NOTE:${ALL_OFF}${BOLD} $1${ALL_OFF}\n"
+}
+
+ALL_OFF="$(tput sgr0)"
+BOLD="$(tput bold)"
+BLUE="${BOLD}$(tput setaf 4)"
+YELLOW="${BOLD}$(tput setaf 3)"
+
+_update() {
+    msg_blue "Updating desktop MIME database..."
+    update-desktop-database -q
+    msg_blue "Updating icon cache.."
+    gtk-update-icon-cache -q -t -f /usr/share/icons/hicolor
+}
+
+post_install() {
+    _update
+    note 1 "This package installs side-by-side with [extra]'s thunderbird."
+    note 2 "The binary is called 'thunderbird-esr'."
+}
+
+post_upgrade() {
+    _update
+}
+
+post_remove() {
+    post_upgrade
+}
